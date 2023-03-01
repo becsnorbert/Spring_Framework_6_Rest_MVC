@@ -23,7 +23,7 @@ public class BeerController {
         return beerService.listBeers();
     }
 
-    //@RequestMapping(value = "/api/v1/beer/{beerId}", method = RequestMethod.GET)
+    //@RequestMapping(value = "/{beerId}", method = RequestMethod.GET)
     @GetMapping("/{beerId}")
     public Beer getBeerById(@PathVariable("beerId") UUID beerId) {
 

@@ -4,10 +4,10 @@ import com.becs.spring_framework_6_rest_mvc.model.Customer;
 import com.becs.spring_framework_6_rest_mvc.services.CustomerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -21,11 +21,26 @@ public class CustomerController {
     private final CustomerService customerService;
 
 
+    @PostMapping
+    public ResponseEntity handlePost(@RequestBody Customer customer) {
+
+        Customer savedCustomer = customerService.saveNewCustomer(customer);
+        log.info("New Customer has been saved. The new Customer ID: {}", savedCustomer.getId().toString());
+
+        // Good practice to inform the client int the HTTP response header.
+        // This case, we send back the new Customer location.
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Location", "/api/v1/customer" + savedCustomer.getId().toString());
+
+        return new ResponseEntity(headers, HttpStatus.CREATED);
+    }
+
+
     //@RequestMapping(method = RequestMethod.GET)
     @GetMapping
     public List<Customer> listAllCustomer() {
         log.debug("Get all Customer, in the CustomerController");
-        return customerService.ListCustomers();
+        return customerService.listCustomers();
     }
 
     //@RequestMapping(value = "/{customerId}", method = RequestMethod.GET)

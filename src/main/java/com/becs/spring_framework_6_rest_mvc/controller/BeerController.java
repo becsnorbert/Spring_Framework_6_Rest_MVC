@@ -25,14 +25,14 @@ public class BeerController {
     public ResponseEntity handlePost(@RequestBody Beer beer)
     {
         Beer savedBeer = beerService.saveNewBeer(beer);
-        log.info("New Beer has ben saved. The Beer ID: {}", savedBeer.getId().toString());
+        log.info("New Beer has been saved. The new Beer ID: {}", savedBeer.getId().toString());
 
-        // Good practice to inform the client int the HTTP response header
+        // Good practice to inform the client int the HTTP response header.
         // This case, we send back the new Beer location.
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
+        HttpHeaders header = new HttpHeaders();
+        header.add("Location", "/api/v1/beer/" + savedBeer.getId().toString());
 
-        return new ResponseEntity(headers, HttpStatus.CREATED);
+        return new ResponseEntity(header, HttpStatus.CREATED);
     }
 
     //@RequestMapping(method = RequestMethod.GET)

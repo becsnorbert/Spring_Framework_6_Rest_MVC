@@ -21,6 +21,14 @@ public class BeerController {
     private final BeerService beerService;
 
 
+    @PatchMapping("/{beerId}")
+    public ResponseEntity updateBeerPatchById(@PathVariable("beerId") UUID beerId,
+                                              @RequestBody Beer beer) {
+        beerService.patchBeerById(beerId, beer);
+        log.info("The {} Beer has been Patched!", beerId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
     @DeleteMapping("/{beerId}")
     public ResponseEntity deleteById(@PathVariable("beerId") UUID beerId) {
         beerService.deleteById(beerId);
@@ -28,17 +36,15 @@ public class BeerController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-
     @PutMapping("/{beerId}")
     public ResponseEntity updateById(@PathVariable("beerId") UUID beerId,
                                      @RequestBody Beer beer) {
 
-        beerService.updateBeer(beerId, beer);
+        beerService.updateBeerById(beerId, beer);
         log.info("The {} Beer has been updated!", beerId);
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
-
 
     @PostMapping
     public ResponseEntity handlePost(@RequestBody Beer beer)

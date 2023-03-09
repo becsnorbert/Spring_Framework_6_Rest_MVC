@@ -136,6 +136,8 @@ public class BeerServiceImpl implements BeerService {
         if (beer.getPrice() != null) {
             existing.setPrice(beer.getPrice());
         }
+
+        beerMap.put(existing.getId(), existing);
     }
 
 

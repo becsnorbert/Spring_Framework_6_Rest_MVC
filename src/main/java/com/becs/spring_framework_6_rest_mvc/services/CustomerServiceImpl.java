@@ -3,6 +3,7 @@ package com.becs.spring_framework_6_rest_mvc.services;
 import com.becs.spring_framework_6_rest_mvc.model.Customer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -84,6 +85,19 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public void deleteById(UUID customerId) {
         customerMap.remove(customerId);
+    }
+
+    @Override
+    public void pachCustomerById(UUID customerId, Customer customer) {
+        Customer existing = customerMap.get(customerId);
+
+        if (StringUtils.hasText(customer.getCustomerName())) {
+            existing.setCustomerName(customer.getCustomerName());
+        }
+
+        if (customer.getVersion() != null) {
+            existing.setVersion(customer.getVersion());
+        }
     }
 
 }

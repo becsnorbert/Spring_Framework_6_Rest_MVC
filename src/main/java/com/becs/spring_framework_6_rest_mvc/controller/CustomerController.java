@@ -20,6 +20,14 @@ public class CustomerController {
 
     private final CustomerService customerService;
 
+    @PatchMapping("/{customerId}")
+    public ResponseEntity deleteCustomer(@PathVariable("customerId") UUID customerId,
+                                         @RequestBody Customer customer) {
+        customerService.pachCustomerById(customerId, customer);
+        log.info("The {} Customer has been patched!", customerId);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
 
     @DeleteMapping("/{customerId}")
     public ResponseEntity deleteCustomer(@PathVariable("customerId") UUID customerId) {
@@ -27,7 +35,6 @@ public class CustomerController {
         log.info("The {} Customer has been deleted!", customerId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
-
 
     @PutMapping("/{customerId}")
     public ResponseEntity updateCustomer(@PathVariable("customerId") UUID customerId,
@@ -37,7 +44,6 @@ public class CustomerController {
 
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
-
 
     @PostMapping
     public ResponseEntity handlePost(@RequestBody Customer customer) {
@@ -52,7 +58,6 @@ public class CustomerController {
 
         return new ResponseEntity(headers, HttpStatus.CREATED);
     }
-
 
     //@RequestMapping(method = RequestMethod.GET)
     @GetMapping

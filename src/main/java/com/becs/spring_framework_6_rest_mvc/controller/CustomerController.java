@@ -15,12 +15,14 @@ import java.util.UUID;
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/customer")
 public class CustomerController {
 
     private final CustomerService customerService;
 
-    @PatchMapping("/{customerId}")
+    public static final String CUSTOMER_PATH = "/api/v1/customer";
+    public static final String CUSTOMER_PATH_ID = CUSTOMER_PATH + "/{customerId}";
+
+    @PatchMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteCustomer(@PathVariable("customerId") UUID customerId,
                                          @RequestBody Customer customer) {
         customerService.pachCustomerById(customerId, customer);
@@ -29,14 +31,14 @@ public class CustomerController {
     }
 
 
-    @DeleteMapping("/{customerId}")
+    @DeleteMapping(CUSTOMER_PATH_ID)
     public ResponseEntity deleteCustomer(@PathVariable("customerId") UUID customerId) {
         customerService.deleteById(customerId);
         log.info("The {} Customer has been deleted!", customerId);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PutMapping("/{customerId}")
+    @PutMapping(CUSTOMER_PATH_ID)
     public ResponseEntity updateCustomer(@PathVariable("customerId") UUID customerId,
                                          @RequestBody Customer customer) {
         customerService.updateCustomer(customerId, customer);
@@ -45,7 +47,7 @@ public class CustomerController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
-    @PostMapping
+    @PostMapping(CUSTOMER_PATH)
     public ResponseEntity handlePost(@RequestBody Customer customer) {
 
         Customer savedCustomer = customerService.saveNewCustomer(customer);
@@ -60,14 +62,14 @@ public class CustomerController {
     }
 
     //@RequestMapping(method = RequestMethod.GET)
-    @GetMapping
+    @GetMapping(CUSTOMER_PATH)
     public List<Customer> listAllCustomer() {
         log.debug("Get all Customer, in the CustomerController");
         return customerService.listCustomers();
     }
 
     //@RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
-    @GetMapping("/{customerId}")
+    @GetMapping(CUSTOMER_PATH_ID)
     public Customer getCustomerById(@PathVariable("customerId") UUID customerId) {
         log.debug("Get a Customer in the CustomerController. ID: {}", customerId.toString());
         return customerService.getCustomerById(customerId);

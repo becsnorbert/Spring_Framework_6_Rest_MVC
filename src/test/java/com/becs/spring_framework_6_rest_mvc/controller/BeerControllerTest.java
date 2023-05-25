@@ -19,12 +19,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 import static org.hamcrest.core.Is.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,6 +53,19 @@ class BeerControllerTest {
         // has a clean BeerServiceImpl with the default data's.
         // So we can modify this data's regardless, the next test has the default data's.
         beerServiceImpl = new BeerServiceImpl();
+    }
+
+    @Test
+    void testUpdateBeer() throws Exception {
+        Beer beer = beerServiceImpl.listBeers().get(0);
+
+        mockMvc.perform(put("/api/v1/beer" + beer.getId())
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(beer)))
+                .andExpect(status().isNoContent());
+
+        verify(beerService).updateBeerById(any(UUID.class), any(Beer.class));
     }
 
     // Create JSON using Jackson

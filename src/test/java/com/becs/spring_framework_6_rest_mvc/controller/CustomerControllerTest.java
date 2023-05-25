@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -16,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,11 +41,30 @@ class CustomerControllerTest {
     @MockBean
     CustomerService customerService;
 
+    // Pre defined ArgumentCapture<UUID> to reuse in testDeleteCustomer() and testUpdateCustomer()
+    @Captor
+    ArgumentCaptor<UUID> uuidArgumentCaptor;
+
     CustomerServiceImpl customerServiceImpl;
 
     @BeforeEach
     void setUp() {
         customerServiceImpl = new CustomerServiceImpl();
+    }
+
+    @Test
+    void testDeleteCustomer() throws Exception {
+        Customer customer = customerServiceImpl.listCustomers().get(0);
+
+        mockMvc.perform(delete("/api/v1/customer/" + customer.getId())
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+
+        // Using pre defined ArgumentCapture<UUID>
+        verify(customerService).deleteById(uuidArgumentCaptor.capture());
+
+        assertThat(customer.getId()).isEqualTo(uuidArgumentCaptor.getValue());
+
     }
 
     @Test
@@ -55,7 +77,8 @@ class CustomerControllerTest {
                 .content(objectMapper.writeValueAsString(customer)))
                 .andExpect(status().isNoContent());
 
-        verify(customerService).updateCustomer(any(UUID.class), any(Customer.class));
+        // Using pre defined ArgumentCapture<UUID>
+        verify(customerService).updateCustomer(uuidArgumentCaptor.capture(), any(Customer.class));
     }
 
     @Test
